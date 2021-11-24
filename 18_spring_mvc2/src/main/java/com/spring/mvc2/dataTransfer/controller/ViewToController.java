@@ -2,10 +2,10 @@ package com.spring.mvc2.dataTransfer.controller;
 
 import java.util.Map;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.spring.mvc2.dataTransfer.domain.MemberDto;
 
 @Controller // 중복되는 경로는 Controller에 설정하여 중복되는 url을 줄일 수 있다.
+@RequestMapping("vTOc")
 public class ViewToController {
 
 	/* 
