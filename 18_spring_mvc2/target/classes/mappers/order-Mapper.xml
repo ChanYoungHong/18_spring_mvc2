@@ -120,68 +120,108 @@
 		
 		 	-->
 	<resultMap type="Map" id="orderInfo">
-		<result column="MEMBER_ID" property="memberId"/>
-		<result column="ORDER_ID" property="orderId"/>
-		<result column="PRODUCT_NAME" property="productName"/>
-		<result column="PRODUCT_PRICE" property="productPrice"/>
-		<result column="TAX" property="tax"/>
-		<result column="AFTER_TAX" property="afterTax"/>
-		<result column="ORDER_COUNT" property="orderCount"/>
-		<result column="TOTAL_PRICE" property="totalPrice"/>
-		<result column="IMAGE_NAME" property="imageName"/>
-		<result column="TMAGE_TYPE" property="imageType"/>
-		<result column="FILE_SIZE" property="fileSize"/>
+		<result column="MEMBER_ID"  	property="memberId"/>
+		<result column="ORDER_ID"  		property="orderId"/>
+		<result column="PRODUCT_NAME"  	property="productName"/>
+		<result column="PRODUCT_PRICE"  property="productPrice"/>
+		<result column="TAX"  			property="tax"/>
+		<result column="AFTER_TAX"  	property="afterTax"/>
+		<result column="ORDER_COUNT"  	property="orderCount"/>
+		<result column="TOTAL_PRICE"  	property="totalPrice"/>
+		<result column="IMAGE_NAME"  	property="imageName"/>
+		<result column="IMAGE_TYPE"  	property="imageType"/>
+		<result column="FILE_SIZE"  	property="fileSIZE"/>
 	</resultMap>
-		 	
+
 	<select id="select3" resultMap="orderInfo">
-	
 		SELECT
-		O.MEMBER_ID									AS MEMBER_ID,
-        O.ORDER_ID									AS ORDER_ID,
-        O.PRODUCT_NAME								AS PRODUCT_NAME,
-        O.PRODUCT_PRICE								AS PRODUCT_PRICE,
-        O.PRODUCT_PRICE * 0.01						AS TAX,
-        O.PRODUCT_PRICE + (O.PRODUCT_PRICE * 0.1)	AS AFTER_TAX,
-        O.ORDER_COUNT								AS ORDER_COUNT,
-        O.TOTAL_PRICE								AS TOTAL_PRICE,
-        P.IMAGE_NAME								AS IMAGE_NAME,
-        P.IMAGE_TYPE								AS TMAGE_TYPE,	
-        P.FILE_SIZE									AS FILE_SIZE
-        
+				O.MEMBER_ID									AS MEMBER_ID,
+		        O.ORDER_ID									AS ORDER_ID,
+		        O.PRODUCT_NAME								AS PRODUCT_NAME,
+		        O.PRODUCT_PRICE								AS PRODUCT_PRICE,
+		        O.PRODUCT_PRICE * 0.1						AS TAX,
+		        O.PRODUCT_PRICE + (O.PRODUCT_PRICE * 0.1)	AS AFTER_TAX,
+		        O.ORDER_COUNT								AS ORDER_COUNT,
+		        O.TOTAL_PRICE								AS TOTAL_PRICE,
+		        P.IMAGE_NAME								AS IMAGE_NAME,
+		        P.IMAGE_TYPE								AS IMAGE_TYPE,
+		        P.FILE_SIZE									AS FILE_SIZE
 		FROM
-			T_ORDER_LIST O,
-			T_PRODUCT_IMAGE P
+				T_ORDER_LIST O,
+				T_PRODUCT_IMAGE P
 		WHERE
-			O.PRODUCT_CODE = P.PRODUCT_CODE;
+				O.PRODUCT_CODE = P.PRODUCT_CODE
 	</select>
 	
 	<select id="select4" resultType="Map">
-		
 		SELECT
-			O.MEMBER_ID									AS memberId,
-	        O.ORDER_ID									AS orderId,
-	        O.PRODUCT_NAME								AS productName,
-	        O.PRODUCT_PRICE								AS productPrice,
-	        O.PRODUCT_PRICE * 0.01						AS tax,
-	        O.PRODUCT_PRICE + (O.PRODUCT_PRICE * 0.1)	AS afterTax,
-	        O.ORDER_COUNT								AS orderCount,
-	        O.TOTAL_PRICE								AS totalPrice,
-	        P.IMAGE_NAME								AS imageName,
-	        P.IMAGE_TYPE								AS imageType,	
-	        P.FILE_SIZE									AS fileSize
-        
+				O.MEMBER_ID									AS memberId,
+		        O.ORDER_ID									AS orderId,
+		        O.PRODUCT_NAME								AS productName,
+		        O.PRODUCT_PRICE								AS productPrice,
+		        O.PRODUCT_PRICE * 0.1						AS tax,
+		        O.PRODUCT_PRICE + (O.PRODUCT_PRICE * 0.1)	AS afterTax,
+		        O.ORDER_COUNT								AS orderCount,
+		        O.TOTAL_PRICE								AS totalPrice,
+		        P.IMAGE_NAME								AS imageName,
+		        P.IMAGE_TYPE								AS imageType,
+		        P.FILE_SIZE									AS fileSize
 		FROM
-			T_ORDER_LIST O,
-			T_PRODUCT_IMAGE P
+				T_ORDER_LIST O,
+				T_PRODUCT_IMAGE P
 		WHERE
-			O.PRODUCT_CODE = P.PRODUCT_CODE;
-	
-	
-	
-	
-	
-	
+				O.PRODUCT_CODE = P.PRODUCT_CODE
 	</select>
+
+	<!-- 		
+		
+	  	# Dao에서 mapper로 파라메타 전달 
+	  	
+		- 전달 받은 데이터를 쿼리문에서 ${변수}  , #{변수}과 같은 형태로 사용된다.
+		- 주로 #{값} 형태(preparedStatement)를 사용하며 이 형태를 권장한다.
+		- 대소문자가 구분되므로 오타에 주의한다.
+		
+	-->
+	
+	<insert id="insertSingleData" parameterType="String">
+		INSERT INTO 
+					T_ORDER_LIST(MEMBER_ID)
+		VALUES (
+					#{memberId}
+		)
+	</insert>
+	
+	
+	<insert id = "inserDto" parameterType="OrderDto">
+		INSERT INTO T_ORDER_LIST (
+				MEMBER_ID,
+				PRODUCT_CODE,
+				PRODUCT_NAME
+		
+		)
+		VALUES (
+		
+				#{memberId},
+				#{productCode},
+				#{productName}
+		)
+	</insert>
+	
+	<insert id = "insertMap" parameterType="Map">
+		INSERT INTO T_ORDER_LIST (
+				MEMBER_ID,
+				PRODUCT_CODE,
+				PRODUCT_NAME
+		
+		)
+		VALUES (
+		
+				#{memberId},
+				#{productCode},
+				#{productName}
+		)
+	</insert>
+
 
 </mapper>
  
@@ -189,4 +229,4 @@
  
  
  
- 
+ 
