@@ -38,7 +38,7 @@
 	-->
 	
 	<insert id="ifEx" parameterType="OrderDto">
-		INSERT INTO T_ORDER_LIST(
+		INSERT INTO T_ORDER_LIST (
 				PRODUCT_CODE,
 				PRODUCT_NAME,
 				PRODUCT_PRICE,
@@ -46,39 +46,37 @@
 				TOTAL_PRICE
 		)
 		VALUES
-			<if test="productCode == null">
+			<if test='productCode == null'>
 				("invalid",
 				 "invalid",
 				 -1,
 				 -1,
-				 -1)
+				 -1)			
 			</if>
-			
 			<if test='productCode != null'>
 				(#{productCode},
 				#{productName},
 				#{productPrice},
-				#{productCount},
+				#{orderCount},
 				#{totalPrice})
 			</if>
-	
 	</insert>
 	
 	<insert id="chooseEx" parameterType="OrderDto">
 		
 		INSERT INTO T_ORDER_LIST (
-						PRODUCT_CODE,
-						PRODUCT_NAME,
-						PRODUCT_PRICE,
-						ORDER_COUNT,
-						TOTAL_PRICE
+				PRODUCT_CODE,
+				PRODUCT_NAME,
+				PRODUCT_PRICE,
+				ORDER_COUNT,
+				TOTAL_PRICE
 		)
 		VALUES (
 				#{productCode},
 				<choose>
-					<when test='productCode == "0x001"' >"기계식키보드"</when>
-					<when test='productCode == "0x002"' >"무소음마우스"</when>
-					<when test='productCode == "0x003"' >"장패드"</when>
+					<when test='productCode == "0x001"'>"기계식키보드"</when>
+					<when test='productCode == "0x002"'>"무소음마우스"</when>
+					<when test='productCode == "0x003"'>"장패드"</when>
 					<otherwise>"등록되지 않은 상품"</otherwise>
 				</choose>,
 				<choose>
@@ -96,6 +94,9 @@
 				</choose>)
 	</insert>
 	
+	
+	
+	
 	<!-- 
 	
 		# foreach
@@ -110,9 +111,25 @@
 			    
 			    open="시작문자열"   : 최종 반환값의 접두어 지정  (IN(값, 값, ...) 조건을 만들 때 편리)
 			    close="종료문자열"	: 최종 반환값의 접미어 지정
-				
-	
 	-->
+	
+	<insert id="foreachEx" parameterType="list">
+		INSERT INTO
+				T_ORDER_LIST
+		VALUES
+		
+			 	<foreach item="orderDto" collection="list" separator=",">
+			 		(#{orderDto.memberId},
+			 		 #{orderDto.orderId},
+			 		 #{orderDto.productCode},
+			 		 #{orderDto.productName},
+			 		 #{orderDto.productPrice},
+			 		 #{orderDto.orderCount},
+			 		 #{orderDto.totalPrice},
+			 		 now())
+			 	</foreach>
+	
+	</insert>
 	
 	<!-- 
 	
@@ -122,6 +139,37 @@
 		- 앞 뒤에 필요한 구문들(AND, OR, WHEHRE)을 추가하거나 생략하는 역할을 한다.
 	
 	 -->
+	<select id="whereEx" parameterType="OrderDto" resultType="OrderDto">
+		
+		<!--  
+			SELECT
+					*
+			FROM
+					T_ORDER_LIST
+			WHERE
+					<if test='memberId != null and memberId != "" '>
+						MEMBER_ID = #{memberId}
+					</if>
+					<if test='orderId != null and orderId != ""'>
+						AND ORDER_ID = #{orderId}
+					</if>
+		-->		
+		
+		SELECT
+				*
+		FROM
+				T_ORDER_LIST
+		<where>
+				<if test='memberId != null and memberId != "" '>
+					MEMBER_ID = #{memberId}
+				</if>
+				<if test='orderId != null and orderId != ""'>
+					AND ORDER_ID = #{orderId}
+				</if>
+		</where>
+		
+	</select>
+
 
 	<!-- 
 	
@@ -131,4 +179,33 @@
 		- 앞 뒤에 필요없는 구문(,)을 생략하여 준다.
 	
 	 -->
+	 <update id="setEx" parameterType="OrderDto">
+	 	<!--  
+		 	UPDATE
+		 			T_ORDER_LIST
+		 	SET
+		 			<if test='productName != null and productName != ""'>
+			 			PRODUCT_NAME = #{productName},
+		 			</if>
+		 			<if test='productPrice != 0'>
+			 			PRODUCT_PRICE = #{productPrice}
+		 			</if>
+		 	WHERE
+		 			PRODUCT_CODE = #{productCode}
+	 	-->
+	 	
+	 	UPDATE
+	 			T_ORDER_LIST
+	 	<set>
+	 			<if test='productName != null and productName != ""'>
+		 			PRODUCT_NAME = #{productName},
+	 			</if>
+	 			<if test='productPrice != 0'>
+		 			PRODUCT_PRICE = #{productPrice}
+	 			</if>
+	 	</set>
+	 	WHERE
+	 			PRODUCT_CODE = #{productCode}
+	 </update>
+	 
 </mapper>

@@ -1,5 +1,8 @@
 package com.spring.mvc2.dataTransfer.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +42,72 @@ public class DynamicQueryController {
 		orderDto.setOrderCount(3);
 		
 		dynamicQueryDao.chooseEx(orderDto);
+		
+		return "home";
+	}
+	
+	@RequestMapping(value="/foreachEx", method=RequestMethod.GET)
+	public String foreachEx() {
+		
+		List<OrderDto> orderList = new ArrayList<OrderDto>();
+		
+		OrderDto orderDto = null;
+		
+		for(int i = 0; i < 11; i++) {
+			
+			orderDto = new OrderDto();
+			orderDto.setMemberId("임시유저아이디 " + i);
+			orderDto.setOrderId("임시주문아이디" + i);
+			orderDto.setProductCode("임시주문코드" + i);
+			orderDto.setProductName("임시 상품명 " +i);
+			orderDto.setProductPrice(10000 * i);
+			orderDto.setOrderCount(i);
+			orderDto.setTotalPrice(orderDto.getProductPrice() * orderDto.getOrderCount());
+			
+			orderList.add(orderDto);
+		}
+		
+		dynamicQueryDao.foreachEx(orderList);
+		
+		
+		return "home";
+	}
+	
+	@RequestMapping(value = "/whereEx" , method=RequestMethod.GET)
+	public String whereEx() {
+		
+		OrderDto orderDto = new OrderDto();
+		
+		// 1) memberId와 orderId가 모두 있을 경우 -> 정상
+	//	orderDto.setMemberId("user1");
+		//orderDto.setOrderId("req1");
+		
+		// 2) memberId만 있을 경우 -> 정상
+		//orderDto.setMemberId("user1");
+		
+		// 3) orderId만 있을 경우 -> 에러 발생
+		orderDto.setOrderId("req1");
+		
+		return "home";
+	}
+	
+	@RequestMapping(value="/setEx", method=RequestMethod.GET)
+	public String setEx() {
+		
+		OrderDto orderDto = new OrderDto();
+		orderDto.setProductCode("0x003");
+		
+		// 1) productPrice과 productPrice가 모두 있을 경우 -> 정상
+		orderDto.setProductName("(신제품) 마우스 장패드 + 마우스까지 !!");
+		orderDto.setProductPrice(15000);
+		
+		// 2) productName만 있을 경우 -> 정상
+		orderDto.setProductPrice(25000);
+		
+		// 3) productName만 있을 경우 -> 에러 발생
+		orderDto.setProductName("(신제품!!! ) 마우스 장패드 ");
+		
+		dynamicQueryDao.setEx(orderDto);
 		
 		return "home";
 	}
